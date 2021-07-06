@@ -88,13 +88,13 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                 Container(
-                  margin: EdgeInsets.only(top: 60),
+                  margin: EdgeInsets.only(top: 40),
                   child: Center(child: Text("developer of this app 🤌\n jrt '23 cs, xc & track\nnova swimming", 
                   textAlign: TextAlign.center,
                   style: GoogleTextStyle.text(),)),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 60),
+                  margin: EdgeInsets.only(top: 40),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
