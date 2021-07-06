@@ -11,19 +11,22 @@ class ProfileContainer extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  offset: Offset(0, 20),
-                  blurRadius: 100,
-                  spreadRadius: 20,
-                  color: Color.fromRGBO(50, 50, 93, 0.25))
-            ],
-              borderRadius: BorderRadius.circular((size - 12) * clipPercentage),
-              image: DecorationImage(
-                  image: NetworkImage(image), fit: BoxFit.cover))),
+        width: size + 20,
+        height: size + 20,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular((size + 8) * clipPercentage),
+            color: Colors.grey[50],
+        ),
+        child: Center(
+          child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular((size - 12) * clipPercentage),
+                  image: DecorationImage(
+                      image: NetworkImage(image), fit: BoxFit.cover))),
+        ),
+      ),
     );
   }
 }
