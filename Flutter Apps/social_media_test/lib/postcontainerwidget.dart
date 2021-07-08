@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:glass_kit/glass_kit.dart';
 import 'package:social_media_test/main.dart';
-import 'package:social_media_test/profilecontainerwidget.dart';
+import 'package:social_media_test/widgets/profilecontainerwidget.dart';
+import 'flutter custom components/GoogleTextStyle.dart';
 
 class PostContainer extends StatelessWidget {
   @override

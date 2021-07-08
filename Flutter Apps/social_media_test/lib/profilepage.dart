@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_media_test/main.dart';
-import 'package:social_media_test/profilecontainerwidget.dart';
+import 'package:social_media_test/widgets/profilecontainerwidget.dart';
+import 'flutter custom components/GoogleTextStyle.dart';
 
 class ProfilePage extends StatelessWidget {
   final username;
