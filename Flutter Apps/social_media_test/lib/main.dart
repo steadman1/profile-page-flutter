@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:social_media_test/customnavbar.dart';
+import 'package:social_media_test/postcontainerwidget.dart';
 import 'package:social_media_test/profilepage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,7 +27,8 @@ class MainStack extends StatelessWidget {
         Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: ProfilePage("spence"),
+          color: Colors.grey[100],
+          child: PostContainer(),
         ),
         Positioned(bottom: 0, child: CustomNavBar()),
       ],

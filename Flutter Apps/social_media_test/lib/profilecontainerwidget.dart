@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_media_test/main.dart';
 
 class ProfileContainer extends StatelessWidget {
   final String image;
@@ -9,24 +10,14 @@ class ProfileContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.center,
       child: Container(
-        width: size + 20,
-        height: size + 20,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular((size + 8) * clipPercentage),
-            color: Colors.grey[50],
-        ),
-        child: Center(
-          child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular((size - 12) * clipPercentage),
-                  image: DecorationImage(
-                      image: NetworkImage(image), fit: BoxFit.cover))),
-        ),
-      ),
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            boxShadow: boxShadow(),
+              borderRadius: BorderRadius.circular((size - 12) * clipPercentage),
+              image: DecorationImage(
+                  image: NetworkImage(image), fit: BoxFit.cover))),
     );
   }
 }
