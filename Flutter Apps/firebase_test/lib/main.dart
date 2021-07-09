@@ -44,21 +44,18 @@ class MainStack extends StatelessWidget {
           child: ProfilePage("spence"),
         ),
         Positioned(bottom: 0, child: CustomNavBar()),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            margin: EdgeInsets.only(bottom: 55),
-            child: SizedBox(
-              width: 70,
-              height: 50,
-              child: FloatingActionButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-                backgroundColor: Colors.white,
-                child: Icon(Icons.add_rounded, size: 40, color: Colors.black,),
-                onPressed: () => print("hello"),
-                
-              ),
+        Positioned(
+          bottom: 45,
+          left: 0,
+          right: 0,
+          child: SizedBox(
+            width: 60,
+            height: 60,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.add_rounded, size: 40, color: Colors.black,),
+              onPressed: () => print("hello"),
+              
             ),
           ),
         )

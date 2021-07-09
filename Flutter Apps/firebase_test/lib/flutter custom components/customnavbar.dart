@@ -27,26 +27,24 @@ class _CustomNavBarState extends State<CustomNavBar> {
           height: 100,
           width: MediaQuery.of(context).size.width,
           color: Colors.white,
-          child: Stack(
-            children: [
-              Positioned(
-                left: MediaQuery.of(context).size.width / 5.5 - iconSize / 2,
-                top: 20,
-                child: Icon(
-                  Icons.home_rounded,
-                  size: iconSize,
-                ),
+          child: Stack(children: [
+           Positioned(
+             left: MediaQuery.of(context).size.width / 5 - iconSize / 2,
+             top: 20,
+             child: Icon(
+                Icons.home_rounded,
+                size: iconSize,
               ),
-              Positioned(
-                right: MediaQuery.of(context).size.width / 5.5 - iconSize / 2,
-                top: 20,
-                child: Icon(
-                  Icons.person,
-                  size: iconSize,
-                ),
-              )
-            ],
-          ),
+           ),
+           Positioned(
+             right: MediaQuery.of(context).size.width / 5 - iconSize / 2,
+             top: 20,
+             child: Icon(
+                Icons.person,
+                size: iconSize,
+              ),
+           )
+          ],),
         ),
       ),
     );
@@ -55,8 +53,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
 class CustomNavBarClipper extends CustomClipper<Path> {
   final double borderRadius;
-  final double middleWidth = 80.0;
-  final double boxWidth = 15.0;
+  final double middleWidth = 80;
   CustomNavBarClipper(this.borderRadius);
 
   @override
@@ -64,35 +61,22 @@ class CustomNavBarClipper extends CustomClipper<Path> {
     Path path = Path()
       ..moveTo(0, size.height)
       ..lineTo(0, borderRadius)
+      ..arcToPoint(Offset(borderRadius, 0),
+          radius: Radius.circular(borderRadius),)
+      ..lineTo(size.width / 2 - middleWidth / 2 - borderRadius, 0)
       ..arcToPoint(
-        Offset(borderRadius, 0),
-        radius: Radius.circular(borderRadius),
-      )
-      ..lineTo(size.width / 2 - middleWidth / 2 - borderRadius * 2 + boxWidth, 0)
+          Offset(size.width / 2 - middleWidth / 2, borderRadius),
+          radius: Radius.circular(borderRadius),)
       ..arcToPoint(
-        Offset(
-            size.width / 2 - middleWidth / 2 - borderRadius + boxWidth, borderRadius),
-        radius: Radius.circular(borderRadius),
-      )
+          Offset(size.width / 2 + middleWidth / 2, borderRadius),
+          clockwise: false,
+          radius: Radius.circular(borderRadius),)
       ..arcToPoint(
-          Offset(size.width / 2 - middleWidth / 2 + boxWidth, borderRadius * 2),
-          radius: Radius.circular(borderRadius),
-          clockwise: false)
-      ..lineTo(size.width / 2 + middleWidth / 2 - boxWidth, borderRadius * 2)
-      ..arcToPoint(
-          Offset(size.width / 2 + middleWidth / 2 + borderRadius - boxWidth,
-              borderRadius),
-          radius: Radius.circular(borderRadius),
-          clockwise: false)
-      ..arcToPoint(
-        Offset(size.width / 2 + middleWidth / 2 + borderRadius * 2 - boxWidth, 0),
-        radius: Radius.circular(borderRadius),
-      )
+          Offset(size.width / 2 + middleWidth / 2 + borderRadius, 0),
+          radius: Radius.circular(borderRadius))
       ..lineTo(size.width - borderRadius, 0)
-      ..arcToPoint(
-        Offset(size.width, borderRadius),
-        radius: Radius.circular(borderRadius),
-      )
+      ..arcToPoint(Offset(size.width, borderRadius),
+          radius: Radius.circular(borderRadius),)
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
