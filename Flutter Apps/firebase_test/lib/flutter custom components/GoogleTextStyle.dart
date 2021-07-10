@@ -18,11 +18,11 @@ class GoogleTextStyle {
 
   static TextStyle username({Color? color}) {
     return GoogleFonts.dmSans(
-        color: color, fontSize: 18, fontWeight: FontWeight.w800);
+        color: color, fontSize: 16, fontWeight: FontWeight.w800);
   }
 
   static TextStyle text({Color? color}) {
     return GoogleFonts.dmSans(
-        color: color, fontSize: 18, fontWeight: FontWeight.w400);
+        color: color, fontSize: 16, fontWeight: FontWeight.w400);
   }
 }

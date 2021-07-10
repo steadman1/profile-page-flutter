@@ -7,7 +7,8 @@ class CustomNavBar extends StatefulWidget {
 
 class _CustomNavBarState extends State<CustomNavBar> {
   final double radius = 30.0;
-  final double iconSize = 40.0;
+  final double iconSize = 32.0;
+  final double boxWidth = 25.0;
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +23,15 @@ class _CustomNavBarState extends State<CustomNavBar> {
         ],
       ),
       child: ClipPath(
-        clipper: CustomNavBarClipper(30),
+        clipper: CustomNavBarClipper(30, boxWidth),
         child: Container(
-          height: 100,
+          height: 80,
           width: MediaQuery.of(context).size.width,
           color: Colors.white,
           child: Stack(
             children: [
               Positioned(
-                left: MediaQuery.of(context).size.width / 5.5 - iconSize / 2,
+                left: MediaQuery.of(context).size.width / 6 + boxWidth - radius,
                 top: 20,
                 child: Icon(
                   Icons.home_rounded,
@@ -38,7 +39,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                 ),
               ),
               Positioned(
-                right: MediaQuery.of(context).size.width / 5.5 - iconSize / 2,
+                right: MediaQuery.of(context).size.width / 6  + boxWidth - radius,
                 top: 20,
                 child: Icon(
                   Icons.person,
@@ -56,8 +57,9 @@ class _CustomNavBarState extends State<CustomNavBar> {
 class CustomNavBarClipper extends CustomClipper<Path> {
   final double borderRadius;
   final double middleWidth = 80.0;
-  final double boxWidth = 15.0;
-  CustomNavBarClipper(this.borderRadius);
+  final double boxWidth; // higher num == less margin from "+" box
+  final double boxHeight = 5.0; // same applies here ^
+  CustomNavBarClipper(this.borderRadius, this.boxWidth);
 
   @override
   getClip(Size size) {
@@ -68,24 +70,28 @@ class CustomNavBarClipper extends CustomClipper<Path> {
         Offset(borderRadius, 0),
         radius: Radius.circular(borderRadius),
       )
-      ..lineTo(size.width / 2 - middleWidth / 2 - borderRadius * 2 + boxWidth, 0)
+      ..lineTo(
+          size.width / 2 - middleWidth / 2 - borderRadius * 2 + boxWidth, 0)
       ..arcToPoint(
-        Offset(
-            size.width / 2 - middleWidth / 2 - borderRadius + boxWidth, borderRadius),
+        Offset(size.width / 2 - middleWidth / 2 - borderRadius + boxWidth,
+            borderRadius),
         radius: Radius.circular(borderRadius),
       )
       ..arcToPoint(
-          Offset(size.width / 2 - middleWidth / 2 + boxWidth, borderRadius * 2),
+          Offset(size.width / 2 - middleWidth / 2 + boxWidth,
+              borderRadius * 2 - boxHeight),
           radius: Radius.circular(borderRadius),
           clockwise: false)
-      ..lineTo(size.width / 2 + middleWidth / 2 - boxWidth, borderRadius * 2)
+      ..lineTo(size.width / 2 + middleWidth / 2 - boxWidth,
+          borderRadius * 2 - boxHeight)
       ..arcToPoint(
           Offset(size.width / 2 + middleWidth / 2 + borderRadius - boxWidth,
               borderRadius),
           radius: Radius.circular(borderRadius),
           clockwise: false)
       ..arcToPoint(
-        Offset(size.width / 2 + middleWidth / 2 + borderRadius * 2 - boxWidth, 0),
+        Offset(
+            size.width / 2 + middleWidth / 2 + borderRadius * 2 - boxWidth, 0),
         radius: Radius.circular(borderRadius),
       )
       ..lineTo(size.width - borderRadius, 0)

@@ -1,9 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_test/flutter%20custom%20components/GoogleTextStyle.dart';
 import 'package:firebase_test/main.dart';
+import 'package:firebase_test/pages/postPage.dart';
+import 'package:firebase_test/widgets/cachedImageContainer.dart';
 import 'package:firebase_test/widgets/likeButtonWidget.dart';
 import 'package:firebase_test/widgets/profilecontainerwidget.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'commentButtonWidget.dart';
 
 final double borderRadiusExtent = 30.0;
@@ -11,21 +13,28 @@ final double borderRadiusExtent = 30.0;
 class PostContainer extends StatelessWidget {
   final imageUrl;
   final likeCount;
+  final postPath;
   final profileUrl;
   final username;
   PostContainer(
-      {this.imageUrl, this.profileUrl, this.username, this.likeCount});
+      {this.imageUrl,
+      this.profileUrl,
+      this.username,
+      this.likeCount,
+      this.postPath});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
+      margin: EdgeInsets.only(left: 25, right: 25),
       decoration: BoxDecoration(boxShadow: boxShadow()),
       child: Stack(
         children: [
           PostBody(
             imageUrl: imageUrl,
             profileUrl: profileUrl,
+            postPath: postPath,
+            likeCount: likeCount,
             username: username,
           ),
           Positioned(
@@ -33,7 +42,7 @@ class PostContainer extends StatelessWidget {
               bottom: 15 + borderRadiusExtent,
               child: Row(
                 children: [
-                  LikeButton(likeCount),
+                  LikeButton(likeCount, true),
                   CommentButton(),
                 ],
               ))
@@ -46,8 +55,10 @@ class PostContainer extends StatelessWidget {
 class PostBody extends StatelessWidget {
   final imageUrl;
   final profileUrl;
+  final postPath;
+  final likeCount;
   final username;
-  PostBody({this.imageUrl, this.profileUrl, this.username});
+  PostBody({this.imageUrl, this.profileUrl, this.username, this.likeCount, this.postPath});
 
   @override
   Widget build(BuildContext context) {
@@ -62,18 +73,32 @@ class PostBody extends StatelessWidget {
                 topRight: Radius.circular(borderRadiusExtent),
               )),
         ),
-        Transform.translate(
-          offset: Offset(0, -borderRadiusExtent),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadiusExtent),
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                  color: Colors.white,
-                  child: Center(child: CircularProgressIndicator.adaptive()),
+        GestureDetector(
+          onTap: () => Navigator.push(
+              context,
+              PageTransition(
+                child: PostPage(
+                  imageUrl: imageUrl,
+                  likeCount: likeCount,
+                  postPath: postPath,
+                  profileUrl: profileUrl,
+                  username: username,
                 ),
+                type: PageTransitionType.bottomToTop,
+                curve: Curves.fastOutSlowIn,
+                duration: Duration(milliseconds: 150),
+                reverseDuration: Duration(milliseconds: 150),
+                //curve: Curves.bounceIn
+              )),
+          //onDoubleTap: () => likeStreamController.add(0),
+          child: Transform.translate(
+            offset: Offset(0, -borderRadiusExtent),
+            child: Hero(
+              tag: imageUrl,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(borderRadiusExtent),
+                child: CachedImageContainer(imageUrl),
+              ),
             ),
           ),
         ),

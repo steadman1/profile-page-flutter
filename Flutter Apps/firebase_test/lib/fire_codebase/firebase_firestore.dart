@@ -36,7 +36,7 @@ class RetrieveUser {
           await FirebaseFirestore.instance.doc(postPath).get();
 
       // retrieves data (postUrl/link) of DocumentSnapshot and appends it to list
-      userPostsData.add(postData.data());
+      userPostsData.add({"data": postData.data(), "path": postPath});
     }
 
     return userPostsData;
@@ -65,7 +65,11 @@ class CommitUser {
       /* adds post to the "postsReference" collection 
       and returns the path */
       DocumentReference firebasePath =
-          await postsReference.add({"url": imageUrl});
+          await postsReference.add({
+            "url": imageUrl, 
+            "likeCount": 0,
+            "comments": []
+            });
 
       /* adds firebase post path to the "userPosts" document in 
       the "usersReference" collection */
@@ -77,5 +81,20 @@ class CommitUser {
       return false;
     }
     return true;
+  }
+}
+
+class RetrieveReference {
+
+  static Future<List?> postComments(postPath) async {
+    /* gets document of the path passed in as a
+    function arg */
+    DocumentSnapshot userPost =
+        await FirebaseFirestore.instance.doc(postPath).get();
+
+    // gets the "comments" field in the ref from ^
+    List? postComments = userPost.get("comments");
+
+    return postComments;
   }
 }

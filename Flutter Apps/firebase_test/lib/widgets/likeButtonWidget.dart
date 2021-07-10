@@ -4,13 +4,15 @@ import 'package:glass_kit/glass_kit.dart';
 
 class LikeButton extends StatefulWidget {
   final int likeCount;
-  LikeButton(this.likeCount);
+  final bool isLiked;
+  LikeButton(this.likeCount, this.isLiked);
   @override
   _LikeButtonState createState() => _LikeButtonState();
 }
 
 class _LikeButtonState extends State<LikeButton> {
   late String formattedLikeCount;
+  late bool liked;
 
   @override
   void didChangeDependencies() {
@@ -19,32 +21,41 @@ class _LikeButtonState extends State<LikeButton> {
         : widget.likeCount > 999
             ? (widget.likeCount / 1000).toStringAsFixed(1) + "K"
             : widget.likeCount.toString();
+    liked = widget.isLiked;
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer.clearGlass(
-      height: 40,
-      width: 70 + formattedLikeCount.length * 8,
-      color: Colors.grey.shade400.withOpacity(0.3),
-      blur: 3,
-      borderColor: Colors.transparent,
-      borderRadius: BorderRadius.circular(40),
-      child: Container(
-        padding: EdgeInsets.only(left: 10, right: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Icon(
-              Icons.favorite_border,
-              color: Colors.white,
-            ),
-            Text(
-              formattedLikeCount.toString(),
-              style: GoogleTextStyle.text(color: Colors.white),
-            )
-          ],
+    return GestureDetector(
+      onTap: () {
+        liked = liked ? false : true;
+        setState(() {});
+      },
+      child: GlassContainer.clearGlass(
+        height: 40,
+        width: 70 + formattedLikeCount.length * 8,
+        color:
+            liked ? Colors.grey.shade400.withOpacity(0.3) 
+            : Colors.red.shade300,
+        blur: 3,
+        borderColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(40),
+        child: Container(
+          padding: EdgeInsets.only(left: 10, right: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Icon(
+                liked ? Icons.favorite_border : Icons.favorite,
+                color: Colors.white,
+              ),
+              Text(
+                formattedLikeCount.toString(),
+                style: GoogleTextStyle.text(color: Colors.white),
+              )
+            ],
+          ),
         ),
       ),
     );
