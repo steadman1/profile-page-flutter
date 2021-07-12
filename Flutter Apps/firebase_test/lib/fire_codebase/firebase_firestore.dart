@@ -36,7 +36,11 @@ class RetrieveUser {
           await FirebaseFirestore.instance.doc(postPath).get();
 
       // retrieves data (postUrl/link) of DocumentSnapshot and appends it to list
-      userPostsData.add({"data": postData.data(), "path": postPath});
+      userPostsData.add({
+        "data": postData.data(),
+        "path": postPath,
+        "id": userPosts.docs[index].id
+      });
     }
 
     return userPostsData;
@@ -64,12 +68,8 @@ class CommitUser {
 
       /* adds post to the "postsReference" collection 
       and returns the path */
-      DocumentReference firebasePath =
-          await postsReference.add({
-            "url": imageUrl, 
-            "likeCount": 0,
-            "comments": []
-            });
+      DocumentReference firebasePath = await postsReference
+          .add({"url": imageUrl, "likeCount": 0, "comments": []});
 
       /* adds firebase post path to the "userPosts" document in 
       the "usersReference" collection */
@@ -82,10 +82,36 @@ class CommitUser {
     }
     return true;
   }
+
+  Future<bool> deletePost(
+      {required String referenceId, required String imageUrl}) async {
+    CommitStorage addUser = CommitStorage(username);
+
+    DocumentReference referenceDoc =
+        usersReference.doc(username).collection("userPosts").doc(referenceId);
+
+    DocumentSnapshot snap = await referenceDoc.get();
+
+    // gets reference to
+    var postReferencePath = snap.get("postReference");
+
+    try {
+      // deletes the actual file in firebase cloud storage
+      addUser.deleteImage(imageUrl: imageUrl);
+
+      // deletes document referencing the cloud storage object
+      await FirebaseFirestore.instance.doc(postReferencePath.path).delete();
+      await referenceDoc.delete();
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 }
 
 class RetrieveReference {
-
   static Future<List?> postComments(postPath) async {
     /* gets document of the path passed in as a
     function arg */

@@ -6,6 +6,26 @@ class CommitStorage {
   final String username;
   CommitStorage(this.username);
 
+  Future<bool> deleteImage({required String imageUrl}) async {
+
+    String referenceId = imageUrl.substring(imageUrl.indexOf("token=") + 6);
+
+    // creates db reference of image in firebase
+    var task = firebase_storage.FirebaseStorage.instance
+        .ref("users/" + username + "/userPosts/" + referenceId);
+
+    try {
+
+      // deletes image at reference
+      await task.delete();
+
+      return true;
+    } catch (e) {
+      // returns false on any error
+      return false;
+    }
+  }
+
   Future<String> addImage({required String filePath}) async {
     /* convert the string-absolute-path to file
     so it can be processed/uploaded to firebase */

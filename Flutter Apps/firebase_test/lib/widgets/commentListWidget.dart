@@ -61,9 +61,9 @@ class CommentListBuilder extends StatelessWidget {
                       });
                 });
           }
-          return Container(
-              margin: EdgeInsets.only(top: 60),
-              child: CircularProgressIndicator.adaptive());
+          return Center(
+            child: CircularProgressIndicator.adaptive()
+          );
         });
   }
 }

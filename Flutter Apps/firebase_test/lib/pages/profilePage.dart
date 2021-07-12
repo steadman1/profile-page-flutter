@@ -1,13 +1,16 @@
-import 'dart:ffi';
+import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_test/fire_codebase/firebase_firestore.dart';
+import 'package:firebase_test/fire_codebase/firebase_objects.dart';
 import 'package:firebase_test/widgets/postContainerWidget.dart';
 import 'package:firebase_test/widgets/profileBioWidget.dart';
 import 'package:firebase_test/widgets/profileButtons.dart';
 import 'package:firebase_test/widgets/profileHeaderFollowWidget.dart';
 import 'package:firebase_test/widgets/profileNamesWidget.dart';
 import 'package:flutter/material.dart';
+
+StreamController profileStreamController = StreamController.broadcast();
 
 class ProfilePage extends StatefulWidget {
   final username;
@@ -34,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
             DocumentSnapshot? data = snapshot.data;
 
             return ProfilePageHeader(
+                user: UserMetaData(
               username: data!.get("username"),
               givenName: data.get("givenName"),
               followers: data.get("followers"),
@@ -41,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
               bio: data.get("bio"),
               profileUrl: data.get("profileUrl"),
               themeColor: data.get("themeColor"),
-            );
+            ));
           }
           return Center(child: CircularProgressIndicator.adaptive());
         });
@@ -49,23 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 class ProfilePageHeader extends StatefulWidget {
-  final username;
-  final givenName;
-
-  final followers;
-  final following;
-
-  final bio;
-  final profileUrl;
-  final themeColor;
-  ProfilePageHeader(
-      {this.username,
-      this.givenName,
-      this.followers,
-      this.following,
-      this.bio,
-      this.profileUrl,
-      this.themeColor});
+  final UserMetaData user;
+  ProfilePageHeader({required this.user});
 
   @override
   _ProfilePageHeaderState createState() => _ProfilePageHeaderState();
@@ -75,9 +64,9 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
   late RetrieveUser getUser;
 
   @override
-  void didChangeDependencies() {
-    getUser = RetrieveUser(widget.username);
-    super.didChangeDependencies();
+  void initState() {
+    getUser = RetrieveUser(widget.user.username);
+    super.initState();
   }
 
   @override
@@ -87,6 +76,7 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
       //     widget.themeColor[0], widget.themeColor[1], widget.themeColor[2], 1),
       child: RefreshIndicator(
         onRefresh: () async {
+          profileStreamController.add(0.0);
           setState(() {});
         },
         color: Colors.black,
@@ -97,9 +87,12 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color.fromRGBO(widget.themeColor[0], widget.themeColor[1],
-                        widget.themeColor[2], 1),
-                    Colors.grey.shade100
+                    Color.fromRGBO(
+                        widget.user.themeColor[0],
+                        widget.user.themeColor[1],
+                        widget.user.themeColor[2],
+                        1),
+                    Colors.grey.shade200
                   ],
                   begin: Alignment(0, -0.3),
                   end: Alignment(0.0, 0.7),
@@ -111,14 +104,15 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
                     margin: EdgeInsets.only(top: 100),
                     child: Column(
                       children: [
-                        ProfileFollow(widget.followers, widget.following,
-                            widget.profileUrl),
-                        ProfileNames(widget.username, widget.givenName),
+                        ProfileFollow(widget.user.followers,
+                            widget.user.following, widget.user.profileUrl),
+                        ProfileNames(
+                            widget.user.username, widget.user.givenName),
                       ],
                     ),
                   ),
-                  ProfileBio(widget.bio),
-                  ProfileButtons(widget.themeColor),
+                  ProfileBio(widget.user.bio),
+                  ProfileButtons(widget.user.themeColor),
                 ],
               ),
             ),
@@ -127,46 +121,42 @@ class _ProfilePageHeaderState extends State<ProfilePageHeader> {
               child: FutureBuilder<List>(
                   future: getUser.userPosts(),
                   builder: (context, snapshot) {
+                    print(snapshot.data);
                     if (snapshot.hasData) {
                       return ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            //print(snapshot.data![index]["path"]);
-                            // if (snapshot.data!.length == 0 ||
-                            //     snapshot.data == null) {
-                            //   return Center(
-                            //     child: Container(
-                            //       height: 200,
-                            //       child: Text(
-                            //         "No Posts Yet",
-                            //         style: GoogleTextStyle.subtitle(),
-                            //       ),
-                            //     ),
-                            //   );
-                            // } else
                             if (index == snapshot.data!.length - 1) {
                               return Container(
+                                key: Key(index.toString()),
                                 /* margin to counteract the navbar
-                                at the bottom */
+                            at the bottom */
                                 margin: EdgeInsets.only(bottom: 60),
                                 child: PostContainer(
-                                  imageUrl: snapshot.data![index]["data"]["url"],
-                                  likeCount: snapshot.data![index]["data"]["likeCount"],
+                                    post: PostMetaData(
+                                  imageUrl: snapshot.data![index]["data"]
+                                      ["url"],
+                                  likeCount: snapshot.data![index]["data"]
+                                      ["likeCount"],
                                   postPath: snapshot.data![index]["path"],
-                                  profileUrl: widget.profileUrl,
-                                  username: widget.username,
-                                ),
+                                  referenceId: snapshot.data![index]["id"],
+                                  profileUrl: widget.user.profileUrl,
+                                  username: widget.user.username,
+                                )),
                               );
                             }
                             return PostContainer(
+                                post: PostMetaData(
                               imageUrl: snapshot.data![index]["data"]["url"],
-                              likeCount: snapshot.data![index]["data"]["likeCount"],
+                              likeCount: snapshot.data![index]["data"]
+                                  ["likeCount"],
                               postPath: snapshot.data![index]["path"],
-                              profileUrl: widget.profileUrl,
-                              username: widget.username,
-                            );
+                              referenceId: snapshot.data![index]["id"],
+                              profileUrl: widget.user.profileUrl,
+                              username: widget.user.username,
+                            ));
                           });
                     } else if (snapshot.hasError) {
                       print(snapshot.error);
